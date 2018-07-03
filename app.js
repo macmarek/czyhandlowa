@@ -6,6 +6,48 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var shoppingFreeSundaysConfig = ["2018-07-08", "2018-07-15", "2018-07-22", "2018-08-12", "2018-08-19", "2018-09-09", "2018-09-16", "2018-09-23", "2018-10-14", "2018-10-21", "2018-11-11", "2018-11-18", "2018-11-09"];
+
+var shoppingFreeSundays = shoppingFreeSundaysConfig.map(function (x, i) {
+    return new Date(Date.parse(x));
+});
+
+var shortFormat = function shortFormat(date) {
+    return date.toISOString().substring(0, 10);
+};
+
+var isShoppingFreeDate = function isShoppingFreeDate(date) {
+    var formatedDate = shortFormat(date);
+    return shoppingFreeSundaysConfig.indexOf(formatedDate) > 0;
+};
+
+var nextDay = function nextDay(d, dow) {
+    d.setDate(d.getDate() + (dow + (7 - d.getDay())) % 7);
+    return d;
+};
+
+var getNextSunday = function getNextSunday(date) {
+    return nextDay(date, 0);
+};
+
+var isShoppingSunday = function isShoppingSunday() {
+    var d = new Date();
+    var isSunday = d.getDay() == 0;
+
+    if (!isSunday) {
+        var next = getNextSunday(d);
+        var isNextShoppingFree = isShoppingFreeDate(next);
+        var formatted = shortFormat(next);
+        return isNextShoppingFree ? "Najbliższa będzie niehandlowa (" + formatted + ")" : "Najbliższa będzie handlowa (" + formatted + ")";
+    }
+
+    if (isShoppingFreeDate(d)) {
+        return "Dzisiaj niehandlowa";
+    }
+
+    return "Dzisiaj handlowa";
+};
+
 var Info = function (_React$Component) {
     _inherits(Info, _React$Component);
 
@@ -14,7 +56,7 @@ var Info = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (Info.__proto__ || Object.getPrototypeOf(Info)).call(this, props));
 
-        _this.state = { info: Info.isShoppingSunday() };
+        _this.state = { info: isShoppingSunday() };
         return _this;
     }
 
@@ -31,19 +73,6 @@ var Info = function (_React$Component) {
 
     return Info;
 }(React.Component);
-
-Info.isShoppingSunday = function () {
-    var d = new Date();
-    var n = d.getDay();
-
-    var isSunday = n == 6;
-
-    if (!isSunday) {
-        return "Dzisiaj nie jest niedziela";
-    }
-
-    return "Jeszcze nie wiem, ale sie dowiem niedługo";
-};
 
 var containerStyle = {
     margin: '0 auto',
