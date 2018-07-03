@@ -7,17 +7,17 @@ var shoppingFreeSundaysConfig = [
     "2018-11-09"
 ];
 
-var shoppingFreeSundays = shoppingFreeSundaysConfig.map((x, i)=>{
-    return new Date(Date.parse(x));
-});
+// var shoppingFreeSundays = shoppingFreeSundaysConfig.map((x, i)=>{
+//     return new Date(Date.parse(x));
+// });
 
 var shortFormat = (date) => {
     return date.toISOString().substring(0, 10);
 };
 
-var isShoppingFreeDate = (date) =>{
+var isShoppingFreeDate = (date) => {
     var formatedDate = shortFormat(date);
-    return shoppingFreeSundaysConfig.indexOf(formatedDate) > 0;
+    return shoppingFreeSundaysConfig.indexOf(formatedDate) >= 0;
 };
 
 var nextDay = function(d, dow){

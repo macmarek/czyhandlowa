@@ -8,9 +8,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var shoppingFreeSundaysConfig = ["2018-07-08", "2018-07-15", "2018-07-22", "2018-08-12", "2018-08-19", "2018-09-09", "2018-09-16", "2018-09-23", "2018-10-14", "2018-10-21", "2018-11-11", "2018-11-18", "2018-11-09"];
 
-var shoppingFreeSundays = shoppingFreeSundaysConfig.map(function (x, i) {
-    return new Date(Date.parse(x));
-});
+// var shoppingFreeSundays = shoppingFreeSundaysConfig.map((x, i)=>{
+//     return new Date(Date.parse(x));
+// });
 
 var shortFormat = function shortFormat(date) {
     return date.toISOString().substring(0, 10);
@@ -18,7 +18,7 @@ var shortFormat = function shortFormat(date) {
 
 var isShoppingFreeDate = function isShoppingFreeDate(date) {
     var formatedDate = shortFormat(date);
-    return shoppingFreeSundaysConfig.indexOf(formatedDate) > 0;
+    return shoppingFreeSundaysConfig.indexOf(formatedDate) >= 0;
 };
 
 var nextDay = function nextDay(d, dow) {
