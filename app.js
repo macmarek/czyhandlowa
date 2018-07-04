@@ -60,64 +60,97 @@ var Info = function (_React$Component) {
     _createClass(Info, [{
         key: "render",
         value: function render() {
-            var d = new Date();
+            //var d = new Date();
+            var d = new Date(Date.parse("2018-07-08"));
             var isSunday = d.getDay() == 0;
 
             if (!isSunday) {
                 var next = getNextSunday(d);
                 var isNextShoppingFree = isShoppingFreeDate(next);
-                var formatted = shortFormat(next);
+                var nextDay = next.getDate() + "-go";
 
                 if (isNextShoppingFree) {
                     return React.createElement(
-                        "h2",
+                        "div",
                         null,
-                        "Najbli\u017Csza b\u0119dzie ",
                         React.createElement(
-                            "span",
-                            { "class": "badge badge-danger" },
-                            "niehandlowa"
+                            "div",
+                            null,
+                            "Najbli\u017Csza niedziela (",
+                            nextDay,
+                            ") b\u0119dzie "
                         ),
-                        " (",
-                        formatted,
-                        ")"
+                        React.createElement(
+                            "h1",
+                            null,
+                            React.createElement(
+                                "span",
+                                { "class": "badge badge-danger" },
+                                "niehandlowa"
+                            )
+                        )
                     );
                 } else {
                     return React.createElement(
-                        "h2",
+                        "div",
                         null,
-                        "Najbli\u017Csza b\u0119dzie ",
                         React.createElement(
-                            "span",
-                            { "class": "badge badge-success" },
-                            "handlowa"
+                            "div",
+                            null,
+                            "Najbli\u017Csza niedziela (",
+                            nextDay,
+                            ") b\u0119dzie "
                         ),
-                        " (",
-                        formatted,
-                        ")"
+                        React.createElement(
+                            "h1",
+                            null,
+                            React.createElement(
+                                "span",
+                                { "class": "badge badge-success" },
+                                "handlowa"
+                            )
+                        )
                     );
                 }
             }
 
             if (isShoppingFreeDate(d)) {
                 return React.createElement(
-                    "h2",
+                    "div",
                     null,
                     React.createElement(
-                        "span",
-                        { "class": "badge badge-danger" },
-                        "Dzisiaj niehandlowa"
+                        "div",
+                        null,
+                        "Dzisiaj jest niedziela"
+                    ),
+                    React.createElement(
+                        "h1",
+                        null,
+                        React.createElement(
+                            "span",
+                            { "class": "badge badge-danger" },
+                            "niehandlowa"
+                        )
                     )
                 );
             }
 
             return React.createElement(
-                "h2",
+                "div",
                 null,
                 React.createElement(
-                    "span",
-                    { "class": "badge badge-success" },
-                    "Dzisiaj handlowa"
+                    "div",
+                    null,
+                    "Dzisiaj jest niedziela"
+                ),
+                React.createElement(
+                    "h1",
+                    null,
+                    React.createElement(
+                        "span",
+                        { "class": "badge badge-success" },
+                        "handlowa"
+                    )
                 )
             );
         }
@@ -140,13 +173,21 @@ function InfoSundays(props) {
     return React.createElement(
         "div",
         null,
-        "Niedziele: ",
-        listItems
+        React.createElement(
+            "div",
+            null,
+            "Niedziele w tym miesi\u0105cu:"
+        ),
+        React.createElement(
+            "div",
+            null,
+            listItems
+        )
     );
 }
 
 var containerStyle = {
-    margin: '10em auto',
+    margin: '8em auto',
     maxWidth: '700px',
     textAlign: 'center'
 };
@@ -168,11 +209,6 @@ var App = function (_React$Component2) {
             return React.createElement(
                 "div",
                 { style: containerStyle },
-                React.createElement(
-                    "h1",
-                    null,
-                    "Czy niedziela jest handlowa?"
-                ),
                 React.createElement(Info, null),
                 React.createElement(InfoSundays, { allSundays: allSundays })
             );

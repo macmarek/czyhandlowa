@@ -50,22 +50,25 @@ var daysInMonth = (month,year) => {
 class Info extends React.Component {
 
     render() {
-        var d = new Date();
+        //var d = new Date();
+        var d = new Date(Date.parse("2018-07-08"));
         var isSunday = d.getDay() == 0;
 
         if(!isSunday){
             var next = getNextSunday(d);
             var isNextShoppingFree = isShoppingFreeDate(next);
-            var formatted = shortFormat(next);
+            var nextDay = next.getDate()+"-go";
             
             if(isNextShoppingFree){
                 return (
-                    <h2>Najbliższa będzie <span class="badge badge-danger">niehandlowa</span> ({formatted})</h2>
+                    <div><div>Najbliższa niedziela ({nextDay}) będzie </div>
+                    <h1><span class="badge badge-danger">niehandlowa</span></h1></div>
                 );
             }
             else{
                 return (
-                    <h2>Najbliższa będzie <span class="badge badge-success">handlowa</span> ({formatted})</h2>
+                    <div><div>Najbliższa niedziela ({nextDay}) będzie </div>
+                    <h1><span class="badge badge-success">handlowa</span></h1></div>
                 );
             }
 
@@ -73,12 +76,14 @@ class Info extends React.Component {
 
         if(isShoppingFreeDate(d)){
             return (
-                <h2><span class="badge badge-danger">Dzisiaj niehandlowa</span></h2>
+                <div><div>Dzisiaj jest niedziela</div>
+                <h1><span class="badge badge-danger">niehandlowa</span></h1></div>
             );
         }
     
         return (
-            <h2><span class="badge badge-success">Dzisiaj handlowa</span></h2>
+            <div><div>Dzisiaj jest niedziela</div>
+            <h1><span class="badge badge-success">handlowa</span></h1></div>
         );  
     }
 }
@@ -91,11 +96,14 @@ function InfoSundays(props) {
         </span>
     );
     
-    return <div>Niedziele: {listItems}</div>;
+    return <div>
+            <div>Niedziele w tym miesiącu:</div> 
+            <div>{listItems}</div>
+        </div>;
 }
 
 const containerStyle = {
-    margin: '10em auto',
+    margin: '8em auto',
     maxWidth:'700px',
     textAlign:'center'
 }
@@ -108,7 +116,6 @@ class App extends React.Component{
 
         return(
         <div style={containerStyle}>
-            <h1>Czy niedziela jest handlowa?</h1>
             <Info/>
             <InfoSundays allSundays={allSundays}/>
         </div>
