@@ -7,10 +7,6 @@ var shoppingFreeSundaysConfig = [
     "2018-11-09"
 ];
 
-// var shoppingFreeSundays = shoppingFreeSundaysConfig.map((x, i)=>{
-//     return new Date(Date.parse(x));
-// });
-
 var shortFormat = (date) => {
     return date.toISOString().substring(0, 10);
 };
@@ -29,56 +25,96 @@ var getNextSunday = (date) => {
    return nextDay(date, 0);
 };
 
-var isShoppingSunday = () => {
+var getAllSundaysInMonth = () => {
     var d = new Date();
-    var isSunday = d.getDay() == 0;
+    var getTot = daysInMonth(d.getMonth(),d.getFullYear());
+    var sun = new Array();
 
-    if(!isSunday){
-        var next = getNextSunday(d);
-        var isNextShoppingFree = isShoppingFreeDate(next);
-        var formatted = shortFormat(next);
-        return isNextShoppingFree ? 
-            "Najbliższa będzie niehandlowa ("+formatted+")": 
-            "Najbliższa będzie handlowa ("+formatted+")";
+    for(var i=1;i<=getTot;i++){    
+        var newDate = new Date(d.getFullYear(),d.getMonth(),i,12);
+        if(newDate.getDay()==0){  
+            sun.push({
+                date: newDate,
+                day: i,
+                isShoppingFree: isShoppingFreeDate(newDate)
+            });
+        }
     }
+    return sun;
+}
 
-    if(isShoppingFreeDate(d)){
-        return "Dzisiaj niehandlowa";
-    }
-    
-    return "Dzisiaj handlowa";
-};
+var daysInMonth = (month,year) => {
+    return new Date(year, month, 0).getDate();
+}
 
 class Info extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { info: isShoppingSunday() };
-      }
-    
+
     render() {
+        var d = new Date();
+        var isSunday = d.getDay() == 0;
+
+        if(!isSunday){
+            var next = getNextSunday(d);
+            var isNextShoppingFree = isShoppingFreeDate(next);
+            var formatted = shortFormat(next);
+            
+            if(isNextShoppingFree){
+                return (
+                    <h2>Najbliższa będzie <span class="badge badge-danger">niehandlowa</span> ({formatted})</h2>
+                );
+            }
+            else{
+                return (
+                    <h2>Najbliższa będzie <span class="badge badge-success">handlowa</span> ({formatted})</h2>
+                );
+            }
+
+        }
+
+        if(isShoppingFreeDate(d)){
+            return (
+                <h2><span class="badge badge-danger">Dzisiaj niehandlowa</span></h2>
+            );
+        }
+    
         return (
-            <h3>{this.state.info}</h3>
-      );
+            <h2><span class="badge badge-success">Dzisiaj handlowa</span></h2>
+        );  
     }
+}
+
+function InfoSundays(props) {
+    const listItems = props.allSundays.map((sunday) =>
+        <span 
+            className={sunday.isShoppingFree?"badge badge-danger":"badge badge-success"} 
+            style={{margin:"3px", minWidth:"20px"}}>{sunday.day}
+        </span>
+    );
+    
+    return <div>Niedziele: {listItems}</div>;
 }
 
 const containerStyle = {
-    margin: '0 auto',
-    width:'90%',
+    margin: '10em auto',
+    maxWidth:'700px',
     textAlign:'center'
 }
 
- class App extends React.Component{
+class App extends React.Component{
+    
 
     render(){
-         return(
-            <div style={containerStyle}>
-                <h2>Czy niedziela jest handlowa?</h2>
-                <Info/>
-            </div>
-         );
-     }
- }
+        var allSundays = getAllSundaysInMonth();
+
+        return(
+        <div style={containerStyle}>
+            <h1>Czy niedziela jest handlowa?</h1>
+            <Info/>
+            <InfoSundays allSundays={allSundays}/>
+        </div>
+        );
+    }
+}
   
 ReactDOM.render(
     <App />,

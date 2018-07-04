@@ -8,10 +8,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var shoppingFreeSundaysConfig = ["2018-07-08", "2018-07-15", "2018-07-22", "2018-08-12", "2018-08-19", "2018-09-09", "2018-09-16", "2018-09-23", "2018-10-14", "2018-10-21", "2018-11-11", "2018-11-18", "2018-11-09"];
 
-// var shoppingFreeSundays = shoppingFreeSundaysConfig.map((x, i)=>{
-//     return new Date(Date.parse(x));
-// });
-
 var shortFormat = function shortFormat(date) {
     return date.toISOString().substring(0, 10);
 };
@@ -30,43 +26,99 @@ var getNextSunday = function getNextSunday(date) {
     return nextDay(date, 0);
 };
 
-var isShoppingSunday = function isShoppingSunday() {
+var getAllSundaysInMonth = function getAllSundaysInMonth() {
     var d = new Date();
-    var isSunday = d.getDay() == 0;
+    var getTot = daysInMonth(d.getMonth(), d.getFullYear());
+    var sun = new Array();
 
-    if (!isSunday) {
-        var next = getNextSunday(d);
-        var isNextShoppingFree = isShoppingFreeDate(next);
-        var formatted = shortFormat(next);
-        return isNextShoppingFree ? "Najbliższa będzie niehandlowa (" + formatted + ")" : "Najbliższa będzie handlowa (" + formatted + ")";
+    for (var i = 1; i <= getTot; i++) {
+        var newDate = new Date(d.getFullYear(), d.getMonth(), i, 12);
+        if (newDate.getDay() == 0) {
+            sun.push({
+                date: newDate,
+                day: i,
+                isShoppingFree: isShoppingFreeDate(newDate)
+            });
+        }
     }
+    return sun;
+};
 
-    if (isShoppingFreeDate(d)) {
-        return "Dzisiaj niehandlowa";
-    }
-
-    return "Dzisiaj handlowa";
+var daysInMonth = function daysInMonth(month, year) {
+    return new Date(year, month, 0).getDate();
 };
 
 var Info = function (_React$Component) {
     _inherits(Info, _React$Component);
 
-    function Info(props) {
+    function Info() {
         _classCallCheck(this, Info);
 
-        var _this = _possibleConstructorReturn(this, (Info.__proto__ || Object.getPrototypeOf(Info)).call(this, props));
-
-        _this.state = { info: isShoppingSunday() };
-        return _this;
+        return _possibleConstructorReturn(this, (Info.__proto__ || Object.getPrototypeOf(Info)).apply(this, arguments));
     }
 
     _createClass(Info, [{
         key: "render",
         value: function render() {
+            var d = new Date();
+            var isSunday = d.getDay() == 0;
+
+            if (!isSunday) {
+                var next = getNextSunday(d);
+                var isNextShoppingFree = isShoppingFreeDate(next);
+                var formatted = shortFormat(next);
+
+                if (isNextShoppingFree) {
+                    return React.createElement(
+                        "h2",
+                        null,
+                        "Najbli\u017Csza b\u0119dzie ",
+                        React.createElement(
+                            "span",
+                            { "class": "badge badge-danger" },
+                            "niehandlowa"
+                        ),
+                        " (",
+                        formatted,
+                        ")"
+                    );
+                } else {
+                    return React.createElement(
+                        "h2",
+                        null,
+                        "Najbli\u017Csza b\u0119dzie ",
+                        React.createElement(
+                            "span",
+                            { "class": "badge badge-success" },
+                            "handlowa"
+                        ),
+                        " (",
+                        formatted,
+                        ")"
+                    );
+                }
+            }
+
+            if (isShoppingFreeDate(d)) {
+                return React.createElement(
+                    "h2",
+                    null,
+                    React.createElement(
+                        "span",
+                        { "class": "badge badge-danger" },
+                        "Dzisiaj niehandlowa"
+                    )
+                );
+            }
+
             return React.createElement(
-                "h3",
+                "h2",
                 null,
-                this.state.info
+                React.createElement(
+                    "span",
+                    { "class": "badge badge-success" },
+                    "Dzisiaj handlowa"
+                )
             );
         }
     }]);
@@ -74,9 +126,28 @@ var Info = function (_React$Component) {
     return Info;
 }(React.Component);
 
+function InfoSundays(props) {
+    var listItems = props.allSundays.map(function (sunday) {
+        return React.createElement(
+            "span",
+            {
+                className: sunday.isShoppingFree ? "badge badge-danger" : "badge badge-success",
+                style: { margin: "3px", minWidth: "20px" } },
+            sunday.day
+        );
+    });
+
+    return React.createElement(
+        "div",
+        null,
+        "Niedziele: ",
+        listItems
+    );
+}
+
 var containerStyle = {
-    margin: '0 auto',
-    width: '90%',
+    margin: '10em auto',
+    maxWidth: '700px',
     textAlign: 'center'
 };
 
@@ -92,15 +163,18 @@ var App = function (_React$Component2) {
     _createClass(App, [{
         key: "render",
         value: function render() {
+            var allSundays = getAllSundaysInMonth();
+
             return React.createElement(
                 "div",
                 { style: containerStyle },
                 React.createElement(
-                    "h2",
+                    "h1",
                     null,
                     "Czy niedziela jest handlowa?"
                 ),
-                React.createElement(Info, null)
+                React.createElement(Info, null),
+                React.createElement(InfoSundays, { allSundays: allSundays })
             );
         }
     }]);
