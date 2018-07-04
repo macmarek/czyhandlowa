@@ -60,8 +60,8 @@ var Info = function (_React$Component) {
     _createClass(Info, [{
         key: "render",
         value: function render() {
-            //var d = new Date();
-            var d = new Date(Date.parse("2018-07-08"));
+            var d = new Date();
+            //var d = new Date(Date.parse("2018-07-08"));
             var isSunday = d.getDay() == 0;
 
             if (!isSunday) {
