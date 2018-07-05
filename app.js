@@ -12,6 +12,19 @@ var shortFormat = function shortFormat(date) {
     return date.toISOString().substring(0, 10);
 };
 
+var ddmmFormat = function ddmmFormat(date) {
+    var dd = date.getDate();
+    var mm = date.getMonth() + 1;
+
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+    return "" + dd + "." + mm;
+};
+
 var isShoppingFreeDate = function isShoppingFreeDate(date) {
     var formatedDate = shortFormat(date);
     return shoppingFreeSundaysConfig.indexOf(formatedDate) >= 0;
@@ -26,22 +39,27 @@ var getNextSunday = function getNextSunday(date) {
     return nextDay(date, 0);
 };
 
-var getAllSundaysInMonth = function getAllSundaysInMonth() {
+var getNextSundays = function getNextSundays() {
     var d = new Date();
-    var getTot = daysInMonth(d.getMonth(), d.getFullYear());
-    var sun = new Array();
-
-    for (var i = 1; i <= getTot; i++) {
-        var newDate = new Date(d.getFullYear(), d.getMonth(), i, 12);
-        if (newDate.getDay() == 0) {
-            sun.push({
-                date: newDate,
-                day: i,
-                isShoppingFree: isShoppingFreeDate(newDate)
-            });
-        }
+    var date = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12);
+    var isSunday = date.getDay() == 0;
+    var startDate;
+    if (isSunday) {
+        startDate = date;
+    } else {
+        startDate = getNextSunday(date);
     }
-    return sun;
+    var nextSundays = [new Date(startDate)];
+    for (var i = 1; i < 5; i++) {
+        startDate.setDate(startDate.getDate() + 7);
+        nextSundays.push(new Date(startDate));
+    }
+    return nextSundays.map(function (d, i) {
+        return {
+            date: d,
+            isShoppingFree: isShoppingFreeDate(d)
+        };
+    });
 };
 
 var daysInMonth = function daysInMonth(month, year) {
@@ -159,14 +177,14 @@ var Info = function (_React$Component) {
     return Info;
 }(React.Component);
 
-function InfoSundays(props) {
-    var listItems = props.allSundays.map(function (sunday) {
+function InfoNextSundays(props) {
+    var listItems = props.sundays.map(function (sunday) {
         return React.createElement(
             "span",
             {
                 className: sunday.isShoppingFree ? "badge badge-danger" : "badge badge-success",
                 style: { margin: "3px", minWidth: "20px" } },
-            sunday.day
+            ddmmFormat(sunday.date)
         );
     });
 
@@ -176,7 +194,7 @@ function InfoSundays(props) {
         React.createElement(
             "div",
             null,
-            "Niedziele w tym miesi\u0105cu:"
+            "Najbli\u017Csze niedziele:"
         ),
         React.createElement(
             "div",
@@ -204,13 +222,13 @@ var App = function (_React$Component2) {
     _createClass(App, [{
         key: "render",
         value: function render() {
-            var allSundays = getAllSundaysInMonth();
+            var nextSundays = getNextSundays();
 
             return React.createElement(
                 "div",
                 { style: containerStyle },
                 React.createElement(Info, null),
-                React.createElement(InfoSundays, { allSundays: allSundays })
+                React.createElement(InfoNextSundays, { sundays: nextSundays })
             );
         }
     }]);

@@ -11,6 +11,19 @@ var shortFormat = (date) => {
     return date.toISOString().substring(0, 10);
 };
 
+var ddmmFormat = (date) =>{
+    var dd = date.getDate();
+    var mm = date.getMonth()+1;
+
+    if(dd<10){
+        dd='0'+dd;
+    } 
+    if(mm<10){
+        mm='0'+mm;
+    } 
+    return ""+dd + "."+mm;
+};
+
 var isShoppingFreeDate = (date) => {
     var formatedDate = shortFormat(date);
     return shoppingFreeSundaysConfig.indexOf(formatedDate) >= 0;
@@ -25,23 +38,29 @@ var getNextSunday = (date) => {
    return nextDay(date, 0);
 };
 
-var getAllSundaysInMonth = () => {
+var getNextSundays = () => {
     var d = new Date();
-    var getTot = daysInMonth(d.getMonth(),d.getFullYear());
-    var sun = new Array();
-
-    for(var i=1;i<=getTot;i++){    
-        var newDate = new Date(d.getFullYear(),d.getMonth(),i,12);
-        if(newDate.getDay()==0){  
-            sun.push({
-                date: newDate,
-                day: i,
-                isShoppingFree: isShoppingFreeDate(newDate)
-            });
-        }
+    var date = new Date(d.getFullYear(),d.getMonth(),d.getDate(),12);
+    var isSunday = date.getDay() == 0;
+    var startDate;
+    if(isSunday){
+        startDate = date;
     }
-    return sun;
-}
+    else{
+        startDate = getNextSunday(date);
+    }
+    var nextSundays = [new Date(startDate)];
+    for(var i=1;i<5;i++){
+        startDate.setDate(startDate.getDate() + 7);
+        nextSundays.push(new Date(startDate));
+    }
+    return nextSundays.map((d, i)=>{
+        return {
+            date: d,
+            isShoppingFree: isShoppingFreeDate(d)
+        }
+    })
+};
 
 var daysInMonth = (month,year) => {
     return new Date(year, month, 0).getDate();
@@ -88,16 +107,16 @@ class Info extends React.Component {
     }
 }
 
-function InfoSundays(props) {
-    const listItems = props.allSundays.map((sunday) =>
+function InfoNextSundays(props){
+    const listItems = props.sundays.map((sunday) =>
         <span 
             className={sunday.isShoppingFree?"badge badge-danger":"badge badge-success"} 
-            style={{margin:"3px", minWidth:"20px"}}>{sunday.day}
+            style={{margin:"3px", minWidth:"20px"}}>{ddmmFormat(sunday.date)}
         </span>
     );
     
     return <div>
-            <div>Niedziele w tym miesiącu:</div> 
+            <div>Najbliższe niedziele:</div> 
             <div>{listItems}</div>
         </div>;
 }
@@ -109,15 +128,13 @@ const containerStyle = {
 }
 
 class App extends React.Component{
-    
-
     render(){
-        var allSundays = getAllSundaysInMonth();
+        var nextSundays = getNextSundays();
 
         return(
         <div style={containerStyle}>
             <Info/>
-            <InfoSundays allSundays={allSundays}/>
+            <InfoNextSundays sundays={nextSundays}/>
         </div>
         );
     }
