@@ -121,10 +121,27 @@ function InfoNextSundays(props){
         </div>;
 }
 
-const containerStyle = {
-    margin: '8em auto',
-    maxWidth:'700px',
-    textAlign:'center'
+class CookieInfo extends React.Component {
+    
+    state = {
+        show : true
+    };
+
+    onClick = () => {
+        this.setState({ show: false });
+    }
+    
+    render(){
+        if(!this.state.show){
+            return(null);
+        }
+        return(<div class="alert alert-secondary alert-dismissible" role="alert">
+            <span style={{fontSize:"0.7em"}}>Ta strona używa Cookies w celu zbierania informacji o odwiedzinach poprzez Google Analytics.</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" onClick={this.onClick}>
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>);
+    }
 }
 
 class App extends React.Component{
@@ -132,9 +149,14 @@ class App extends React.Component{
         var nextSundays = getNextSundays();
 
         return(
-        <div style={containerStyle}>
-            <Info/>
-            <InfoNextSundays sundays={nextSundays}/>
+        <div>
+            <div style={{margin: '1em auto',maxWidth:'700px',textAlign:'center', minHeight:"4em"}}>
+                <CookieInfo/>
+            </div>
+            <div style={{margin: '4em auto',maxWidth:'700px',textAlign:'center'}}>
+                <Info/>
+                <InfoNextSundays sundays={nextSundays}/>
+            </div>
         </div>
         );
     }

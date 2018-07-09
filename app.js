@@ -204,14 +204,59 @@ function InfoNextSundays(props) {
     );
 }
 
-var containerStyle = {
-    margin: '8em auto',
-    maxWidth: '700px',
-    textAlign: 'center'
-};
+var CookieInfo = function (_React$Component2) {
+    _inherits(CookieInfo, _React$Component2);
 
-var App = function (_React$Component2) {
-    _inherits(App, _React$Component2);
+    function CookieInfo() {
+        var _ref;
+
+        var _temp, _this2, _ret;
+
+        _classCallCheck(this, CookieInfo);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this2 = _possibleConstructorReturn(this, (_ref = CookieInfo.__proto__ || Object.getPrototypeOf(CookieInfo)).call.apply(_ref, [this].concat(args))), _this2), _this2.state = {
+            show: true
+        }, _this2.onClick = function () {
+            _this2.setState({ show: false });
+        }, _temp), _possibleConstructorReturn(_this2, _ret);
+    }
+
+    _createClass(CookieInfo, [{
+        key: "render",
+        value: function render() {
+            if (!this.state.show) {
+                return null;
+            }
+            return React.createElement(
+                "div",
+                { "class": "alert alert-secondary alert-dismissible", role: "alert" },
+                React.createElement(
+                    "span",
+                    { style: { fontSize: "0.7em" } },
+                    "Ta strona u\u017Cywa Cookies w celu zbierania informacji o odwiedzinach poprzez Google Analytics."
+                ),
+                React.createElement(
+                    "button",
+                    { type: "button", "class": "close", "data-dismiss": "alert", "aria-label": "Close", onClick: this.onClick },
+                    React.createElement(
+                        "span",
+                        { "aria-hidden": "true" },
+                        "\xD7"
+                    )
+                )
+            );
+        }
+    }]);
+
+    return CookieInfo;
+}(React.Component);
+
+var App = function (_React$Component3) {
+    _inherits(App, _React$Component3);
 
     function App() {
         _classCallCheck(this, App);
@@ -226,9 +271,18 @@ var App = function (_React$Component2) {
 
             return React.createElement(
                 "div",
-                { style: containerStyle },
-                React.createElement(Info, null),
-                React.createElement(InfoNextSundays, { sundays: nextSundays })
+                null,
+                React.createElement(
+                    "div",
+                    { style: { margin: '1em auto', maxWidth: '700px', textAlign: 'center', minHeight: "4em" } },
+                    React.createElement(CookieInfo, null)
+                ),
+                React.createElement(
+                    "div",
+                    { style: { margin: '4em auto', maxWidth: '700px', textAlign: 'center' } },
+                    React.createElement(Info, null),
+                    React.createElement(InfoNextSundays, { sundays: nextSundays })
+                )
             );
         }
     }]);
