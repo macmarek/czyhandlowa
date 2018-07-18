@@ -50,7 +50,7 @@ var getNextSundays = () => {
         startDate = getNextSunday(date);
     }
     var nextSundays = [new Date(startDate)];
-    for(var i=1;i<5;i++){
+    for(var i=1;i<8;i++){
         startDate.setDate(startDate.getDate() + 7);
         nextSundays.push(new Date(startDate));
     }
@@ -151,7 +151,7 @@ class App extends React.Component{
         return(
         <div>
             <div style={{margin: '1em auto',maxWidth:'700px',textAlign:'center', minHeight:"4em"}}>
-                <CookieInfo/>
+            <CookieInfo/>  
             </div>
             <div style={{margin: '4em auto',maxWidth:'700px',textAlign:'center'}}>
                 <Info/>
