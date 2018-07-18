@@ -50,7 +50,7 @@ var getNextSundays = () => {
         startDate = getNextSunday(date);
     }
     var nextSundays = [new Date(startDate)];
-    for(var i=1;i<8;i++){
+    for(var i=1;i<5;i++){
         startDate.setDate(startDate.getDate() + 7);
         nextSundays.push(new Date(startDate));
     }
