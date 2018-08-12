@@ -39,13 +39,19 @@ var getNextSunday = function getNextSunday(date) {
     return nextDay(date, 0);
 };
 
+var addDays = function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+};
+
 var getNextSundays = function getNextSundays() {
     var d = new Date();
     var date = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12);
     var isSunday = date.getDay() == 0;
     var startDate;
     if (isSunday) {
-        startDate = date;
+        startDate = getNextSunday(addDays(date, 1));
     } else {
         startDate = getNextSunday(date);
     }
