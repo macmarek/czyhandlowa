@@ -210,25 +210,56 @@ function InfoNextSundays(props) {
     );
 }
 
+var Storage = function Storage() {
+    var _this2 = this;
+
+    _classCallCheck(this, Storage);
+
+    this.testIsSupported = function () {
+        var key = "czyhandlowa_test";
+        try {
+            localStorage.setItem(key, key);
+            localStorage.removeItem(key);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    };
+
+    this.setItem = function (key, value) {
+        if (_this2.isSupported) {
+            localStorage.setItem(key, value);
+        }
+    };
+
+    this.getItem = function (key) {
+        if (!_this2.isSupported) {
+            return null;
+        }
+        return localStorage.getItem(key);
+    };
+
+    this.isSupported = this.testIsSupported();
+};
+
 var CookieInfo = function (_React$Component2) {
     _inherits(CookieInfo, _React$Component2);
 
-    function CookieInfo() {
-        var _ref;
-
-        var _temp, _this2, _ret;
-
+    function CookieInfo(props) {
         _classCallCheck(this, CookieInfo);
 
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = arguments[_key];
-        }
+        var _this3 = _possibleConstructorReturn(this, (CookieInfo.__proto__ || Object.getPrototypeOf(CookieInfo)).call(this, props));
 
-        return _ret = (_temp = (_this2 = _possibleConstructorReturn(this, (_ref = CookieInfo.__proto__ || Object.getPrototypeOf(CookieInfo)).call.apply(_ref, [this].concat(args))), _this2), _this2.state = {
-            show: true
-        }, _this2.onClick = function () {
-            _this2.setState({ show: false });
-        }, _temp), _possibleConstructorReturn(_this2, _ret);
+        var cookieConfirmed = _this3.props.storage.getItem("cookie_confirmed");
+        var shouldShow = !(cookieConfirmed === "true");
+
+        _this3.state = { show: shouldShow };
+
+        _this3.onClick = function () {
+            _this3.props.storage.setItem("cookie_confirmed", true);
+            _this3.setState({ show: false });
+        };
+        return _this3;
     }
 
     _createClass(CookieInfo, [{
@@ -274,6 +305,7 @@ var App = function (_React$Component3) {
         key: "render",
         value: function render() {
             var nextSundays = getNextSundays();
+            var storage = new Storage();
 
             return React.createElement(
                 "div",
@@ -281,7 +313,7 @@ var App = function (_React$Component3) {
                 React.createElement(
                     "div",
                     { style: { margin: '1em auto', maxWidth: '700px', textAlign: 'center', minHeight: "4em" } },
-                    React.createElement(CookieInfo, null)
+                    React.createElement(CookieInfo, { storage: storage })
                 ),
                 React.createElement(
                     "div",

@@ -127,16 +127,52 @@ function InfoNextSundays(props){
         </div>;
 }
 
-class CookieInfo extends React.Component {
-    
-    state = {
-        show : true
-    };
-
-    onClick = () => {
-        this.setState({ show: false });
+class Storage {
+    constructor() {
+        this.isSupported = this.testIsSupported();
     }
     
+    testIsSupported = () => {
+        var key = "czyhandlowa_test";
+        try {
+            localStorage.setItem(key, key);
+            localStorage.removeItem(key);
+            return true;
+        } catch(e) {
+            return false;
+        }
+    }
+
+    setItem = (key, value) => {
+        if(this.isSupported){
+            localStorage.setItem(key, value);
+        }    
+    }
+
+    getItem = (key) =>{
+        if(!this.isSupported){
+            return null;
+        }
+        return localStorage.getItem(key);
+    }
+}
+
+class CookieInfo extends React.Component {
+    
+    constructor(props) {
+        super(props);
+        var cookieConfirmed = this.props.storage.getItem("cookie_confirmed");
+        var shouldShow = !(cookieConfirmed === "true")
+
+        this.state = { show: shouldShow };
+
+        this.onClick = () => {
+            this.props.storage.setItem("cookie_confirmed", true)
+            this.setState({ show: false });
+        }
+    }
+
+  
     render(){
         if(!this.state.show){
             return(null);
@@ -153,11 +189,12 @@ class CookieInfo extends React.Component {
 class App extends React.Component{
     render(){
         var nextSundays = getNextSundays();
+        let storage = new Storage();
 
         return(
         <div>
             <div style={{margin: '1em auto',maxWidth:'700px',textAlign:'center', minHeight:"4em"}}>
-            <CookieInfo/>  
+            <CookieInfo storage={storage}/>  
             </div>
             <div style={{margin: '4em auto',maxWidth:'700px',textAlign:'center'}}>
                 <Info/>
