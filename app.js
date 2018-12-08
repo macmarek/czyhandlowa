@@ -8,6 +8,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var shoppingFreeSundaysConfig = ["2018-07-08", "2018-07-15", "2018-07-22", "2018-08-12", "2018-08-19", "2018-09-09", "2018-09-16", "2018-09-23", "2018-10-14", "2018-10-21", "2018-11-11", "2018-11-18", "2018-11-09", "2018-12-09"];
 
+var shoppingSundaysConfig = ["2019-01-27", "2019-02-24", "2019-03-31", "2019-04-14", "2019-04-28", "2019-05-26", "2019-06-30", "2019-07-28", "2019-08-25", "2019-09-29", "2019-10-27", "2019-11-24", "2019-12-15", "2019-12-22", "2019-12-29"];
+
 var shortFormat = function shortFormat(date) {
     return date.toISOString().substring(0, 10);
 };
@@ -25,9 +27,26 @@ var ddmmFormat = function ddmmFormat(date) {
     return "" + dd + "." + mm;
 };
 
+var shoppingFreeStrategies = {
+    selectShoppingFreeSundays: function selectShoppingFreeSundays(formatedDate) {
+        return shoppingFreeSundaysConfig.indexOf(formatedDate) >= 0;
+    },
+    selectShoppingSundays: function selectShoppingSundays(formatedDate) {
+        return shoppingSundaysConfig.indexOf(formatedDate) == -1;
+    }
+};
+
+var getStrategy = function getStrategy(date) {
+    if (date.indexOf("2018") >= 0) {
+        return shoppingFreeStrategies.selectShoppingFreeSundays;
+    }
+    return shoppingFreeStrategies.selectShoppingSundays;
+};
+
 var isShoppingFreeDate = function isShoppingFreeDate(date) {
     var formatedDate = shortFormat(date);
-    return shoppingFreeSundaysConfig.indexOf(formatedDate) >= 0;
+    var strategy = getStrategy(formatedDate);
+    return strategy(formatedDate);
 };
 
 var nextDay = function nextDay(d, dow) {
@@ -85,7 +104,7 @@ var Info = function (_React$Component) {
         key: "render",
         value: function render() {
             var d = new Date();
-            //var d = new Date(Date.parse("2018-07-08"));
+            //var d = new Date(Date.parse("2019-07-08"));
             var isSunday = d.getDay() == 0;
 
             if (!isSunday) {

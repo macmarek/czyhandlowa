@@ -8,6 +8,21 @@ var shoppingFreeSundaysConfig = [
     "2018-12-09"
 ];
 
+var shoppingSundaysConfig = [
+    "2019-01-27",
+    "2019-02-24",
+    "2019-03-31",
+    "2019-04-14","2019-04-28",
+    "2019-05-26",
+    "2019-06-30",
+    "2019-07-28",
+    "2019-08-25",
+    "2019-09-29",
+    "2019-10-27",
+    "2019-11-24",
+    "2019-12-15","2019-12-22","2019-12-29",
+];
+
 var shortFormat = (date) => {
     return date.toISOString().substring(0, 10);
 };
@@ -25,9 +40,27 @@ var ddmmFormat = (date) =>{
     return ""+dd + "."+mm;
 };
 
+var shoppingFreeStrategies = {
+    selectShoppingFreeSundays : function(formatedDate){
+        return shoppingFreeSundaysConfig.indexOf(formatedDate) >= 0;
+    },
+    selectShoppingSundays : function(formatedDate){
+        return shoppingSundaysConfig.indexOf(formatedDate) == -1;
+    }
+}
+
+var getStrategy = function(date){
+    if(date.indexOf("2018") >=0){
+        return shoppingFreeStrategies.selectShoppingFreeSundays;
+    }
+    return shoppingFreeStrategies.selectShoppingSundays;
+}
+
 var isShoppingFreeDate = (date) => {
     var formatedDate = shortFormat(date);
-    return shoppingFreeSundaysConfig.indexOf(formatedDate) >= 0;
+    var strategy = getStrategy(formatedDate);
+    return strategy(formatedDate);
+    
 };
 
 var nextDay = function(d, dow){
@@ -77,7 +110,7 @@ class Info extends React.Component {
 
     render() {
         var d = new Date();
-        //var d = new Date(Date.parse("2018-07-08"));
+        //var d = new Date(Date.parse("2019-07-08"));
         var isSunday = d.getDay() == 0;
 
         if(!isSunday){
