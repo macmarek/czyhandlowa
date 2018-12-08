@@ -6,7 +6,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var shoppingFreeSundaysConfig = ["2018-07-08", "2018-07-15", "2018-07-22", "2018-08-12", "2018-08-19", "2018-09-09", "2018-09-16", "2018-09-23", "2018-10-14", "2018-10-21", "2018-11-11", "2018-11-18", "2018-11-09"];
+var shoppingFreeSundaysConfig = ["2018-07-08", "2018-07-15", "2018-07-22", "2018-08-12", "2018-08-19", "2018-09-09", "2018-09-16", "2018-09-23", "2018-10-14", "2018-10-21", "2018-11-11", "2018-11-18", "2018-11-09", "2018-12-09"];
 
 var shortFormat = function shortFormat(date) {
     return date.toISOString().substring(0, 10);
